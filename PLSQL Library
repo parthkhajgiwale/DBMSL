@@ -1,0 +1,49 @@
+CREATE TABLE Borrower (
+roll INT
+,NAME varchar2(20)
+,doi DATE
+,nob varchar2(20)
+,STATUS CHAR(1) DEFAULT 'I'
+);
+
+CREATE TABLE Fine (
+roll INT
+,Dt DATE
+,amount INT
+);
+
+DECLARE roll1 INT;
+name1 varchar2(20);
+doi1 DATE;
+nob1 varchar2(20);
+BEGIN
+roll1 := :roll_No;
+name1 := :Name_of_student;
+doi1 := :Date_of_Issue_mm_dd_yyyy;
+nob1 := :Name_of_Book;
+INSERT INTO Borrower (roll,NAME,doi,nob) VALUES (roll1,name1,doi1,nob1);
+dbms_output.put_line('Book isuued');
+END
+
+DECLARE
+	roll1 INT;
+	doi1 DATE;
+	nob1 varchar2(20);
+	days_passed INT;
+	fine INT;
+BEGIN
+	roll1 := :rollNo;
+	SELECT doi , nob , doi1 ,nob1 FROM Borrower WHERE roll = roll1;
+	days_passed := SYSDATE - doi1;
+	dbms_output.put_line(days_passed);
+	IF (days_passed > 30) THEN dbms_output.put_line('per day fine 50');
+	fine := days_passed * 50;
+	ELSIF(days_passed > 15) THEN dbms_output.put_line('per day fine 5');
+	fine := days_passed * 5;ELSE
+	dbms_output.put_line('No fine');
+	fine := days_passed * 0;
+	ENDIF;
+	INSERT INTO fine
+VALUES (roll1,SYSDATE,fine);
+UPDATE borrower SET STATUS = 'R' WHERE roll = roll1 AND STATUS = 'I' dbms_output.put_line(days_passed || nob1);
+END;
